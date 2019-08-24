@@ -77,7 +77,7 @@ public class SigninControllerTest {
 
 		Signin body = res.getBody();
 
-		assertEquals(HttpStatus.CREATED, res.getStatusCode());
+		assertEquals(HttpStatus.OK, res.getStatusCode());
 		assertEquals(signin.getEmail(), body.getEmail());
 		assertEquals(signin.getPassword(), body.getPassword());
 

@@ -84,7 +84,7 @@ public class FuncionarioControllerTest {
 
 		Funcionario body = res.getBody();
 
-		assertEquals(HttpStatus.CREATED, res.getStatusCode());
+		assertEquals(HttpStatus.OK, res.getStatusCode());
 		assertEquals(funcionario.getMatricula(), body.getMatricula());
 		assertEquals(funcionario.getDataDeContratacao().toInstant(), body.getDataDeContratacao().toInstant());
 		assertEquals(funcionario.getDataDeNascimento().toInstant(), body.getDataDeNascimento().toInstant());

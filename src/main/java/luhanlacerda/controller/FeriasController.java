@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,9 +52,9 @@ public class FeriasController {
 //		} else {
 		Ferias ferias = buildFeriasEntity(new Ferias(), feriasDTO);
 
-		Ferias feriasSaved = feriasRepository.save(ferias);
+		feriasRepository.save(ferias);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(feriasSaved);
+		return ResponseEntity.ok().build();
 //		}
 
 	}
@@ -69,8 +68,9 @@ public class FeriasController {
 			return ResponseEntity.notFound().build();
 
 		Ferias ferias = buildFeriasEntity(findById.get(), feriasDTO);
+		feriasRepository.save(ferias);
 
-		return ResponseEntity.ok(feriasRepository.save(ferias));
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{id}")

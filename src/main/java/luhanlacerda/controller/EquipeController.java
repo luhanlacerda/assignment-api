@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,9 +38,9 @@ public class EquipeController {
 
 		Equipe equipe = buildEquipeEntity(new Equipe(), equipeDTO);
 
-		Equipe equipeSaved = equipeRepository.save(equipe);
+		equipeRepository.save(equipe);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(equipeSaved);
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/{id}")
@@ -53,8 +52,8 @@ public class EquipeController {
 			return ResponseEntity.notFound().build();
 
 		Equipe equipe = buildEquipeEntity(findById.get(), equipeDTO);
-
-		return ResponseEntity.ok(equipeRepository.save(equipe));
+		equipeRepository.save(equipe);
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{id}")

@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,9 +36,9 @@ public class FuncionarioController {
 	@PostMapping
 	private ResponseEntity<?> create(@Valid @RequestBody FuncionarioDTO funcionarioDTO) {
 
-		Funcionario funcionario = funcionarioRepository.save(buildFuncionarioEntity(new Funcionario(), funcionarioDTO));
+		funcionarioRepository.save(buildFuncionarioEntity(new Funcionario(), funcionarioDTO));
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(funcionario);
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/{matricula}")
@@ -52,8 +51,9 @@ public class FuncionarioController {
 			return ResponseEntity.notFound().build();
 
 		Funcionario funcionario = buildFuncionarioEntity(findById.get(), funcionarioDTO);
+		funcionarioRepository.save(funcionario);
 
-		return ResponseEntity.ok(funcionarioRepository.save(funcionario));
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{matricula}")

@@ -116,7 +116,7 @@ public class FeriasControllerTest {
 
 		Ferias body = res.getBody();
 
-		assertEquals(HttpStatus.CREATED, res.getStatusCode());
+		assertEquals(HttpStatus.OK, res.getStatusCode());
 		assertEquals(ferias.getFuncionario().getMatricula(), body.getFuncionario().getMatricula());
 		assertEquals(ferias.getPeriodoInicial().toInstant(), body.getPeriodoInicial().toInstant());
 		assertEquals(ferias.getPeriodoFinal().toInstant(), body.getPeriodoFinal().toInstant());
@@ -132,7 +132,7 @@ public class FeriasControllerTest {
 				new ParameterizedTypeReference<Ferias>() {
 				});
 
-		assertEquals(HttpStatus.CREATED, res.getStatusCode());
+		assertEquals(HttpStatus.OK, res.getStatusCode());
 
 	}
 

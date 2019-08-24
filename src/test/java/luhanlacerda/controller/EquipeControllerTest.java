@@ -77,7 +77,7 @@ public class EquipeControllerTest {
 
 		Equipe body = res.getBody();
 
-		assertEquals(HttpStatus.CREATED, res.getStatusCode());
+		assertEquals(HttpStatus.OK, res.getStatusCode());
 		assertEquals(equipe.getNome(), body.getNome());
 		// TODO ajustar
 		assertEquals(equipe.getListFuncionario(), body.getListFuncionario());
@@ -111,7 +111,7 @@ public class EquipeControllerTest {
 				new ParameterizedTypeReference<EquipeDTO>() {
 				});
 
-		assertEquals(HttpStatus.CREATED, res.getStatusCode());
+		assertEquals(HttpStatus.OK, res.getStatusCode());
 	}
 
 	@Test

@@ -1,22 +1,21 @@
 package luhanlacerda.utils;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ConvertStringToDate {
+public class ConvertDate {
 
 	private static final String DATE_EXIT = "dd/MM/yyyyy";
 	private static final String DATE_ENTRY = "dd/MM/yyyy";
 
-	public String stringToDateDDMMYYYY(String dateEntry) {
+	public Date stringToDateDDMMYYYY(String dateEntry) {
 		try {
 			if (dateEntry != null && !dateEntry.isEmpty()) {
 				SimpleDateFormat df = new SimpleDateFormat(DATE_ENTRY);
 				Date dateFormat = df.parse(dateEntry);
 				df = new SimpleDateFormat(DATE_EXIT);
-				return df.format(dateFormat);
+				return dateFormat;
 			} else {
 				return null;
 			}
@@ -42,9 +41,8 @@ public class ConvertStringToDate {
 		}
 	}
 
-	public String getSystemDateInString() {
-		DateFormat dateFormat = new SimpleDateFormat(DATE_EXIT);
-		Date date = new Date();
-		return dateFormat.format(date);
+	public String dateToString(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat(DATE_EXIT);
+		return formatter.format(date);
 	}
 }

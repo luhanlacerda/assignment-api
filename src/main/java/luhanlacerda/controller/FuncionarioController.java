@@ -22,6 +22,7 @@ import luhanlacerda.entity.Equipe;
 import luhanlacerda.entity.Funcionario;
 import luhanlacerda.repository.EquipeRepository;
 import luhanlacerda.repository.FuncionarioRepository;
+import luhanlacerda.utils.ConvertDate;
 
 @RestController
 @RequestMapping(path = "/funcionarios", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -74,9 +75,15 @@ public class FuncionarioController {
 	private ResponseEntity<?> findOne(@PathVariable(required = true) Integer matricula) {
 
 		Optional<Funcionario> findById = funcionarioRepository.findById(matricula);
-
-		if (findById.isPresent())
+		if (findById.isPresent()) {
+			FuncionarioDTO func = new FuncionarioDTO();
+			func.setMatricula(findById.get().getMatricula());
+			func.setNome(findById.get().getNome());
+			func.setDataDeContratacao(new ConvertDate().dateToString(findById.get().getDataDeContratacao()));
+			func.setDataDeNascimento(new ConvertDate().dateToString(findById.get().getDataDeNascimento()));
+			func.setEquipe(findById.get().getEquipe());
 			return ResponseEntity.ok(findById.get());
+		}
 
 		return ResponseEntity.notFound().build();
 	}
@@ -90,8 +97,8 @@ public class FuncionarioController {
 
 	private Funcionario buildFuncionarioEntity(Funcionario funcionario, @Valid FuncionarioDTO funcionarioDto) {
 
-		funcionario.setDataDeContratacao(funcionarioDto.getDataDeContratacao());
-		funcionario.setDataDeNascimento(funcionarioDto.getDataDeNascimento());
+		funcionario.setDataDeContratacao(new ConvertDate().stringToDateDDMMYYYY(funcionarioDto.getDataDeContratacao()));
+		funcionario.setDataDeNascimento(new ConvertDate().stringToDateDDMMYYYY(funcionarioDto.getDataDeNascimento()));
 		funcionario.setEndereco(funcionarioDto.getEndereco());
 		funcionario.setEquipe(funcionarioDto.getEquipe());
 		funcionario.setMatricula(funcionarioDto.getMatricula());

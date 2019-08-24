@@ -1,7 +1,5 @@
 package luhanlacerda.dto;
 
-import java.util.Calendar;
-
 import luhanlacerda.entity.Endereco;
 import luhanlacerda.entity.Equipe;
 
@@ -11,11 +9,11 @@ public class FuncionarioDTO {
 
 	private String nome;
 
-	private Calendar dataDeNascimento;
+	private String dataDeNascimento;
 
 	private Endereco endereco;
 
-	private Calendar dataDeContratacao;
+	private String dataDeContratacao;
 
 	// TODO implementar atributo FOTO!
 
@@ -41,11 +39,11 @@ public class FuncionarioDTO {
 		this.nome = nome;
 	}
 
-	public Calendar getDataDeNascimento() {
+	public String getDataDeNascimento() {
 		return dataDeNascimento;
 	}
 
-	public void setDataDeNascimento(Calendar dataDeNascimento) {
+	public void setDataDeNascimento(String dataDeNascimento) {
 		this.dataDeNascimento = dataDeNascimento;
 	}
 
@@ -57,11 +55,11 @@ public class FuncionarioDTO {
 		this.endereco = endereco;
 	}
 
-	public Calendar getDataDeContratacao() {
+	public String getDataDeContratacao() {
 		return dataDeContratacao;
 	}
 
-	public void setDataDeContratacao(Calendar dataDeContratacao) {
+	public void setDataDeContratacao(String dataDeContratacao) {
 		this.dataDeContratacao = dataDeContratacao;
 	}
 

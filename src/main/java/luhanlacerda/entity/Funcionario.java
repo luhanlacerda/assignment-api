@@ -1,7 +1,7 @@
 package luhanlacerda.entity;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -36,14 +36,14 @@ public class Funcionario implements Serializable {
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
-	private Calendar dataDeNascimento;
+	private Date dataDeNascimento;
 
 	@Embedded
 	private Endereco endereco;
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
-	private Calendar dataDeContratacao;
+	private Date dataDeContratacao;
 
 	// TODO implementar atributo FOTO!
 
@@ -52,7 +52,7 @@ public class Funcionario implements Serializable {
 	@JsonView
 	private Equipe equipe;
 
-	public Funcionario(String nome, Calendar dataDeNascimento, Endereco endereco, Calendar dataDeContratacao) {
+	public Funcionario(String nome, Date dataDeNascimento, Endereco endereco, Date dataDeContratacao) {
 		super();
 		this.nome = nome;
 		this.dataDeNascimento = dataDeNascimento;
@@ -65,8 +65,8 @@ public class Funcionario implements Serializable {
 		this.nome = nome;
 	}
 
-	public Funcionario(Integer matricula, String nome, Calendar dataDeNascimento, Endereco endereco,
-			Calendar dataDeContratacao, Equipe equipe) {
+	public Funcionario(Integer matricula, String nome, Date dataDeNascimento, Endereco endereco, Date dataDeContratacao,
+			Equipe equipe) {
 		super();
 		this.matricula = matricula;
 		this.nome = nome;
@@ -90,11 +90,11 @@ public class Funcionario implements Serializable {
 		this.nome = nome;
 	}
 
-	public Calendar getDataDeNascimento() {
+	public Date getDataDeNascimento() {
 		return dataDeNascimento;
 	}
 
-	public void setDataDeNascimento(Calendar dataDeNascimento) {
+	public void setDataDeNascimento(Date dataDeNascimento) {
 		this.dataDeNascimento = dataDeNascimento;
 	}
 
@@ -106,11 +106,11 @@ public class Funcionario implements Serializable {
 		this.endereco = endereco;
 	}
 
-	public Calendar getDataDeContratacao() {
+	public Date getDataDeContratacao() {
 		return dataDeContratacao;
 	}
 
-	public void setDataDeContratacao(Calendar dataDeContratacao) {
+	public void setDataDeContratacao(Date dataDeContratacao) {
 		this.dataDeContratacao = dataDeContratacao;
 	}
 

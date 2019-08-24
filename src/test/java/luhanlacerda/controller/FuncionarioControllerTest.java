@@ -27,6 +27,7 @@ import luhanlacerda.dto.FuncionarioDTO;
 import luhanlacerda.entity.Endereco;
 import luhanlacerda.entity.Funcionario;
 import luhanlacerda.repository.FuncionarioRepository;
+import luhanlacerda.utils.ConvertDate;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
@@ -47,9 +48,9 @@ public class FuncionarioControllerTest {
 	public void before() {
 		funcionarioRepository.deleteAll();
 
-		funcionario = funcionarioRepository.save(new Funcionario("Funcionario", new GregorianCalendar(1992, 07, 14),
+		funcionario = funcionarioRepository.save(new Funcionario("Funcionario", new ConvertDate().stringToDateDDMMYYYY("10/10/2010"),
 				new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
-				new GregorianCalendar(2019, 8, 28)));
+				new ConvertDate().stringToDateDDMMYYYY("10/10/2010")));
 
 	}
 
@@ -112,7 +113,7 @@ public class FuncionarioControllerTest {
 		FuncionarioDTO funcionarioDTO = new FuncionarioDTO();
 		funcionarioDTO.setNome("Teste");
 		funcionarioDTO.setDataDeNascimento(null);
-		funcionarioDTO.setDataDeContratacao(new GregorianCalendar(2019, 8, 28));
+		funcionarioDTO.setDataDeContratacao(new ConvertDate().stringToDate("10/10/2010"));
 		funcionarioDTO.setEndereco(new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"));
 		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO);
 

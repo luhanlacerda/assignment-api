@@ -3,12 +3,16 @@ package luhanlacerda.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Equipe {
@@ -17,9 +21,12 @@ public class Equipe {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer id;
 
+	@Column(nullable = false)
 	private String nome;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "equipe")
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+			CascadeType.REFRESH, CascadeType.DETACH }, fetch = FetchType.EAGER, mappedBy = "equipe")
+	@JsonManagedReference
 	private List<Funcionario> listFuncionario;
 
 	public Equipe() {
@@ -30,7 +37,7 @@ public class Equipe {
 	public Equipe(String nome, List<Funcionario> listFuncionario) {
 		super();
 		this.nome = nome;
-		this.listFuncionario = listFuncionario;
+		this.setListFuncionario(listFuncionario);
 	}
 
 	public Equipe(String nome) {
@@ -43,7 +50,7 @@ public class Equipe {
 		super();
 		this.id = id;
 		this.nome = nome;
-		this.listFuncionario = listFuncionario;
+		this.setListFuncionario(listFuncionario);
 	}
 
 	public Integer getId() {

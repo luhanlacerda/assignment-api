@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Funcionario {
 
@@ -38,6 +40,7 @@ public class Funcionario {
 
 	@ManyToOne
 	@JoinColumn(name = "equipe_id")
+	@JsonBackReference
 	private Equipe equipe;
 
 	public Funcionario(String nome, Calendar dataDeNascimento, Endereco endereco, Calendar dataDeContratacao) {

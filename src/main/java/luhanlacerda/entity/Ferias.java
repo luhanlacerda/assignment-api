@@ -2,6 +2,7 @@ package luhanlacerda.entity;
 
 import java.util.Calendar;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,9 +24,11 @@ public class Ferias {
 	private Funcionario funcionario;
 
 	@Temporal(TemporalType.DATE)
+	@Column(nullable = false)
 	private Calendar periodoInicial;
 
 	@Temporal(TemporalType.DATE)
+	@Column(nullable = false)
 	private Calendar periodoFinal;
 
 	public Ferias(Integer id, Funcionario funcionario, Calendar periodoInicial, Calendar periodoFinal) {
@@ -85,7 +88,7 @@ public class Ferias {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((funcionario == null) ? 0 : funcionario.hashCode());
-		result = prime * result + id;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((periodoFinal == null) ? 0 : periodoFinal.hashCode());
 		result = prime * result + ((periodoInicial == null) ? 0 : periodoInicial.hashCode());
 		return result;
@@ -105,7 +108,10 @@ public class Ferias {
 				return false;
 		} else if (!funcionario.equals(other.funcionario))
 			return false;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		if (periodoFinal == null) {
 			if (other.periodoFinal != null)

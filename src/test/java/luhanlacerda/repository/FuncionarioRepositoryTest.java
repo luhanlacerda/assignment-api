@@ -1,8 +1,8 @@
 package luhanlacerda.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import luhanlacerda.AssignmentApiApplication;
 import luhanlacerda.configuration.H2TestConfig;
+import luhanlacerda.entity.Endereco;
 import luhanlacerda.entity.Funcionario;
 
 @RunWith(SpringRunner.class)
@@ -30,8 +31,10 @@ public class FuncionarioRepositoryTest {
 	}
 
 	@Test
-	public void insertEquipeTest() {
-		Funcionario funcionario = new Funcionario("Funcionario");
+	public void insertFuncionarioTest() {
+		Funcionario funcionario = new Funcionario("Funcionario", new GregorianCalendar(1992, 07, 14),
+				new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
+				new GregorianCalendar(2019, 8, 28));
 
 		funcionarioRepository.save(funcionario);
 
@@ -41,25 +44,16 @@ public class FuncionarioRepositoryTest {
 	}
 
 	@Test
-	public void findEquipeByIdTest() {
-		Funcionario funcionario = new Funcionario("Funcionario");
+	public void findFuncionarioByIdTest() {
+		Funcionario funcionario = new Funcionario("Funcionario", new GregorianCalendar(1992, 07, 14),
+				new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
+				new GregorianCalendar(2019, 8, 28));
 
 		funcionarioRepository.save(funcionario);
 
 		Optional<Funcionario> foundFuncionario = funcionarioRepository.findById(3);
 
 		assertThat(foundFuncionario).isNotEmpty();
-	}
-
-	@Test
-	public void findEquipeByNomeTest() {
-		Funcionario funcionario = new Funcionario("Funcionario");
-
-		funcionarioRepository.save(funcionario);
-
-		Funcionario funcionarioFromRepository = funcionarioRepository.findByNome("Funcionario");
-
-		assertEquals(funcionarioFromRepository.getNome(), funcionario.getNome());
 	}
 
 }

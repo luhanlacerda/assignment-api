@@ -2,16 +2,21 @@ package luhanlacerda.dto;
 
 import java.util.Calendar;
 
+import javax.validation.constraints.NotNull;
+
 import luhanlacerda.entity.Funcionario;
 
 public class FeriasDTO {
 
 	private Integer id;
 
+	@NotNull
 	private Funcionario funcionario;
 
+	@NotNull
 	private Calendar periodoInicial;
 
+	@NotNull
 	private Calendar periodoFinal;
 
 	public FeriasDTO() {

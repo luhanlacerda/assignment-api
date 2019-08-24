@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.junit.Before;
@@ -48,9 +47,10 @@ public class FuncionarioControllerTest {
 	public void before() {
 		funcionarioRepository.deleteAll();
 
-		funcionario = funcionarioRepository.save(new Funcionario("Funcionario", new ConvertDate().stringToDateDDMMYYYY("10/10/2010"),
-				new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
-				new ConvertDate().stringToDateDDMMYYYY("10/10/2010")));
+		funcionario = funcionarioRepository
+				.save(new Funcionario("Funcionario", new ConvertDate().stringToDateDDMMYYYY("10/10/2010"),
+						new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
+						new ConvertDate().stringToDateDDMMYYYY("10/10/2010")));
 
 	}
 
@@ -113,7 +113,7 @@ public class FuncionarioControllerTest {
 		FuncionarioDTO funcionarioDTO = new FuncionarioDTO();
 		funcionarioDTO.setNome("Teste");
 		funcionarioDTO.setDataDeNascimento(null);
-		funcionarioDTO.setDataDeContratacao(new ConvertDate().stringToDate("10/10/2010"));
+		funcionarioDTO.setDataDeContratacao("10/10/2010");
 		funcionarioDTO.setEndereco(new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"));
 		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO);
 
@@ -130,7 +130,7 @@ public class FuncionarioControllerTest {
 		FuncionarioDTO funcionarioDTO = new FuncionarioDTO();
 		funcionarioDTO.setNome("Teste");
 		funcionarioDTO.setDataDeContratacao(null);
-		funcionarioDTO.setDataDeNascimento(new GregorianCalendar(1992, 7, 14));
+		funcionarioDTO.setDataDeNascimento("10/10/2010");
 		funcionarioDTO.setEndereco(new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"));
 		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO);
 
@@ -146,8 +146,8 @@ public class FuncionarioControllerTest {
 
 		FuncionarioDTO funcionarioDTO = new FuncionarioDTO();
 		funcionarioDTO.setNome("Teste");
-		funcionarioDTO.setDataDeContratacao(new GregorianCalendar(2019, 8, 28));
-		funcionarioDTO.setDataDeNascimento(new GregorianCalendar(1992, 7, 14));
+		funcionarioDTO.setDataDeContratacao("10/10/2010");
+		funcionarioDTO.setDataDeNascimento("10/10/2010");
 		funcionarioDTO.setEndereco(null);
 		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO);
 

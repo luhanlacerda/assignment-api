@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.junit.Before;
@@ -29,6 +28,7 @@ import luhanlacerda.entity.Ferias;
 import luhanlacerda.entity.Funcionario;
 import luhanlacerda.repository.FeriasRepository;
 import luhanlacerda.repository.FuncionarioRepository;
+import luhanlacerda.utils.ConvertDate;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
@@ -55,12 +55,13 @@ public class FeriasControllerTest {
 		feriasRepository.deleteAll();
 		funcionarioRepository.deleteAll();
 
-		funcionario = funcionarioRepository.save(new Funcionario("Funcionario", new GregorianCalendar(1992, 07, 14),
-				new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
-				new GregorianCalendar(2019, 8, 28)));
+		funcionario = funcionarioRepository
+				.save(new Funcionario("Funcionario", new ConvertDate().stringToDateDDMMYYYY("10/10/2010"),
+						new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
+						new ConvertDate().stringToDateDDMMYYYY("10/10/2010")));
 
-		ferias = feriasRepository
-				.save(new Ferias(funcionario, new GregorianCalendar(2020, 8, 28), new GregorianCalendar(2020, 9, 28)));
+		ferias = feriasRepository.save(new Ferias(funcionario, new ConvertDate().stringToDateDDMMYYYY("28/08/2018"),
+				new ConvertDate().stringToDateDDMMYYYY("28/08/2018")));
 	}
 
 	@Test
@@ -141,8 +142,8 @@ public class FeriasControllerTest {
 
 		FeriasDTO feriasDTO = new FeriasDTO();
 		feriasDTO.setFuncionario(null);
-		feriasDTO.setPeriodoInicial(new GregorianCalendar(2020, 8, 28));
-		feriasDTO.setPeriodoFinal(new GregorianCalendar(2020, 9, 28));
+		feriasDTO.setPeriodoInicial("28/08/2018");
+		feriasDTO.setPeriodoFinal("29/08/2018");
 		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO);
 
 		ResponseEntity<FeriasDTO> res = restTemplate.exchange("/ferias", HttpMethod.POST, requestBody,
@@ -156,11 +157,11 @@ public class FeriasControllerTest {
 	public void saveEquipeWithoutPeriodoInicialTest() throws Exception {
 
 		FeriasDTO feriasDTO = new FeriasDTO();
-		feriasDTO.setFuncionario(new Funcionario("Funcionario", new GregorianCalendar(1992, 07, 14),
+		feriasDTO.setFuncionario(new Funcionario("Funcionario", new ConvertDate().stringToDateDDMMYYYY("10/10/2010"),
 				new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
-				new GregorianCalendar(2019, 8, 28)));
+				new ConvertDate().stringToDateDDMMYYYY("10/10/2010")));
 		feriasDTO.setPeriodoInicial(null);
-		feriasDTO.setPeriodoFinal(new GregorianCalendar(2020, 9, 28));
+		feriasDTO.setPeriodoFinal("29/08/2018");
 		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO);
 
 		ResponseEntity<FeriasDTO> res = restTemplate.exchange("/ferias", HttpMethod.POST, requestBody,
@@ -174,11 +175,11 @@ public class FeriasControllerTest {
 	public void saveEquipeWithoutPeriodoFinalTest() throws Exception {
 
 		FeriasDTO feriasDTO = new FeriasDTO();
-		feriasDTO.setFuncionario(new Funcionario("Funcionario", new GregorianCalendar(1992, 07, 14),
+		feriasDTO.setFuncionario(new Funcionario("Funcionario", new ConvertDate().stringToDateDDMMYYYY("10/10/2010"),
 				new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"),
-				new GregorianCalendar(2019, 8, 28)));
+				new ConvertDate().stringToDateDDMMYYYY("10/10/2010")));
 		feriasDTO.setPeriodoFinal(null);
-		feriasDTO.setPeriodoInicial(new GregorianCalendar(2020, 9, 28));
+		feriasDTO.setPeriodoInicial("29/08/2018");
 
 		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO);
 
@@ -192,7 +193,7 @@ public class FeriasControllerTest {
 	@Test
 	public void updateFeriasSuccessfullyTest() throws Exception {
 
-		ferias.setPeriodoInicial(new GregorianCalendar(2020, 9, 12));
+		ferias.setPeriodoInicial(new ConvertDate().stringToDateDDMMYYYY("28/08/2018"));
 		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias);
 
 		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/" + ferias.getId(), HttpMethod.PUT, requestBody,

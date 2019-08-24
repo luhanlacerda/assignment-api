@@ -1,7 +1,8 @@
 package luhanlacerda.entity;
 
-import java.util.Calendar;
+import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,19 +20,19 @@ public class Ferias {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer id;
 
-	@OneToOne
-	@JoinColumn(name = "funcionario_id")
+	@OneToOne(cascade = CascadeType.DETACH)
+	@JoinColumn(name = "funcionario_id", insertable = true, updatable = true)
 	private Funcionario funcionario;
 
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	private Calendar periodoInicial;
+	private Date periodoInicial;
 
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	private Calendar periodoFinal;
+	private Date periodoFinal;
 
-	public Ferias(Integer id, Funcionario funcionario, Calendar periodoInicial, Calendar periodoFinal) {
+	public Ferias(Integer id, Funcionario funcionario, Date periodoInicial, Date periodoFinal) {
 		super();
 		this.id = id;
 		this.funcionario = funcionario;
@@ -39,7 +40,7 @@ public class Ferias {
 		this.periodoFinal = periodoFinal;
 	}
 
-	public Ferias(Funcionario funcionario, Calendar periodoInicial, Calendar periodoFinal) {
+	public Ferias(Funcionario funcionario, Date periodoInicial, Date periodoFinal) {
 		super();
 		this.funcionario = funcionario;
 		this.periodoInicial = periodoInicial;
@@ -67,19 +68,19 @@ public class Ferias {
 		this.funcionario = funcionario;
 	}
 
-	public Calendar getPeriodoInicial() {
+	public Date getPeriodoInicial() {
 		return periodoInicial;
 	}
 
-	public void setPeriodoInicial(Calendar periodoInicial) {
+	public void setPeriodoInicial(Date periodoInicial) {
 		this.periodoInicial = periodoInicial;
 	}
 
-	public Calendar getPeriodoFinal() {
+	public Date getPeriodoFinal() {
 		return periodoFinal;
 	}
 
-	public void setPeriodoFinal(Calendar periodoFinal) {
+	public void setPeriodoFinal(Date periodoFinal) {
 		this.periodoFinal = periodoFinal;
 	}
 

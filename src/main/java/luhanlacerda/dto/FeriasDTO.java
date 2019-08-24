@@ -1,7 +1,5 @@
 package luhanlacerda.dto;
 
-import java.util.Calendar;
-
 import javax.validation.constraints.NotNull;
 
 import luhanlacerda.entity.Funcionario;
@@ -14,10 +12,10 @@ public class FeriasDTO {
 	private Funcionario funcionario;
 
 	@NotNull
-	private Calendar periodoInicial;
+	private String periodoInicial;
 
 	@NotNull
-	private Calendar periodoFinal;
+	private String periodoFinal;
 
 	public FeriasDTO() {
 		super();
@@ -39,19 +37,19 @@ public class FeriasDTO {
 		this.funcionario = funcionario;
 	}
 
-	public Calendar getPeriodoInicial() {
+	public String getPeriodoInicial() {
 		return periodoInicial;
 	}
 
-	public void setPeriodoInicial(Calendar periodoInicial) {
+	public void setPeriodoInicial(String periodoInicial) {
 		this.periodoInicial = periodoInicial;
 	}
 
-	public Calendar getPeriodoFinal() {
+	public String getPeriodoFinal() {
 		return periodoFinal;
 	}
 
-	public void setPeriodoFinal(Calendar periodoFinal) {
+	public void setPeriodoFinal(String periodoFinal) {
 		this.periodoFinal = periodoFinal;
 	}
 

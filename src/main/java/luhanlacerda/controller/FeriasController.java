@@ -2,11 +2,14 @@ package luhanlacerda.controller;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import luhanlacerda.dto.FeriasDTO;
 import luhanlacerda.entity.Ferias;
+import luhanlacerda.entity.Funcionario;
 import luhanlacerda.repository.FeriasRepository;
+import luhanlacerda.repository.FuncionarioRepository;
+import luhanlacerda.utils.ConvertDate;
 
 @RestController
 @RequestMapping(path = "/ferias", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,6 +33,9 @@ public class FeriasController {
 
 	@Autowired
 	FeriasRepository feriasRepository;
+
+	@Autowired
+	FuncionarioRepository funcionarioRepository;
 
 	@GetMapping
 	private ResponseEntity<?> index() throws IOException, URISyntaxException {
@@ -37,25 +46,37 @@ public class FeriasController {
 	private ResponseEntity<?> create(@Valid @RequestBody FeriasDTO feriasDTO) {
 		// Validacao para ver se o funcionario tem mais de um ano de contratacao
 
-//		Calendar dateToCompare = feriasDTO.getFuncionario().getDataDeContratacao();
-//		dateToCompare.add(Calendar.YEAR, 1);
-//
-//		if (dateToCompare.after(Calendar.getInstance())) {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//
-//		}
+		Calendar dateToCompare = Calendar.getInstance();
+		dateToCompare.setTime(new ConvertDate().stringToDateDDMMYYYY(feriasDTO.getPeriodoInicial()));
+		dateToCompare.add(Calendar.YEAR, 1);
 
-//		if (feriasDTO.getListFuncionarios().isEmpty()
-//				|| feriasDTO.getListFuncionarios().stream().filter(f -> f.getEquipe() == null) == null
-//				|| feriasDTO.getListFuncionarios().stream().filter(f -> f.getEquipe().getListFuncionario() <= 4) <= 4) {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//		} else {
+		if (dateToCompare.before(Calendar.getInstance())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+		}
+
+		List<Ferias> feriasEquipe = feriasRepository.findByEquipe(feriasDTO.getFuncionario().getEquipe().getId());
+		Optional<Ferias> feriasFuncionario = feriasEquipe.stream()
+				.filter(f -> f.getFuncionario().getMatricula().equals(feriasDTO.getFuncionario().getMatricula()))
+				.findFirst();
+		boolean funcionarioEmFerias = feriasFuncionario.isPresent()
+				&& feriasFuncionario.get().getPeriodoInicial().after(Calendar.getInstance().getTime());
+
+		if (funcionarioEmFerias || feriasEquipe.size() > 0)
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+		Optional<Funcionario> funcionario = feriasDTO.getFuncionario().getMatricula() != null
+				? funcionarioRepository.findById(feriasDTO.getFuncionario().getMatricula())
+				: Optional.empty();
+
 		Ferias ferias = buildFeriasEntity(new Ferias(), feriasDTO);
+		if (funcionario.isPresent()) {
+			ferias.setFuncionario(funcionario.get());
+		}
 
 		feriasRepository.save(ferias);
 
 		return ResponseEntity.ok().build();
-//		}
 
 	}
 
@@ -75,6 +96,7 @@ public class FeriasController {
 
 	@GetMapping("/{id}")
 	private ResponseEntity<?> findOne(@PathVariable(required = true) Integer id) {
+
 		Optional<Ferias> findById = feriasRepository.findById(id);
 
 		if (findById.isPresent())
@@ -94,8 +116,8 @@ public class FeriasController {
 
 		ferias.setFuncionario(feriasDTO.getFuncionario());
 		ferias.setId(feriasDTO.getId());
-		ferias.setPeriodoFinal(feriasDTO.getPeriodoFinal());
-		ferias.setPeriodoInicial(feriasDTO.getPeriodoInicial());
+		ferias.setPeriodoFinal(new ConvertDate().stringToDateDDMMYYYY(feriasDTO.getPeriodoFinal()));
+		ferias.setPeriodoInicial(new ConvertDate().stringToDateDDMMYYYY(feriasDTO.getPeriodoInicial()));
 
 		return ferias;
 	}

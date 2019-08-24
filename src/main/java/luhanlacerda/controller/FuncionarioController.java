@@ -76,12 +76,12 @@ public class FuncionarioController {
 
 		Optional<Funcionario> findById = funcionarioRepository.findById(matricula);
 		if (findById.isPresent()) {
-			FuncionarioDTO func = new FuncionarioDTO();
-			func.setMatricula(findById.get().getMatricula());
-			func.setNome(findById.get().getNome());
-			func.setDataDeContratacao(new ConvertDate().dateToString(findById.get().getDataDeContratacao()));
-			func.setDataDeNascimento(new ConvertDate().dateToString(findById.get().getDataDeNascimento()));
-			func.setEquipe(findById.get().getEquipe());
+//			FuncionarioDTO func = new FuncionarioDTO();
+//			func.setMatricula(findById.get().getMatricula());
+//			func.setNome(findById.get().getNome());
+//			func.setDataDeContratacao(new ConvertDate().dateToString(findById.get().getDataDeContratacao()));
+//			func.setDataDeNascimento(new ConvertDate().dateToString(findById.get().getDataDeNascimento()));
+//			func.setEquipe(findById.get().getEquipe());
 			return ResponseEntity.ok(findById.get());
 		}
 

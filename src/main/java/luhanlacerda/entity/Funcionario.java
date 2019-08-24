@@ -1,10 +1,12 @@
 package luhanlacerda.entity;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,10 +15,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
-public class Funcionario {
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+public class Funcionario implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8274800955127174329L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -38,9 +47,9 @@ public class Funcionario {
 
 	// TODO implementar atributo FOTO!
 
-	@ManyToOne
-	@JoinColumn(name = "equipe_id")
-	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "equipe_id", insertable = true, updatable = true)
+	@JsonView
 	private Equipe equipe;
 
 	public Funcionario(String nome, Calendar dataDeNascimento, Endereco endereco, Calendar dataDeContratacao) {

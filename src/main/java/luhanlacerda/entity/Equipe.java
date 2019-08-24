@@ -1,9 +1,8 @@
 package luhanlacerda.entity;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,10 +11,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import luhanlacerda.utils.CustomListSerializer;
 
 @Entity
-public class Equipe {
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+public class Equipe implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2823647818347222201L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -24,14 +32,12 @@ public class Equipe {
 	@Column(nullable = false)
 	private String nome;
 
-	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-			CascadeType.REFRESH, CascadeType.DETACH }, fetch = FetchType.EAGER, mappedBy = "equipe")
-	@JsonManagedReference
+	@OneToMany(mappedBy = "equipe", fetch = FetchType.LAZY)
+	@JsonSerialize(using = CustomListSerializer.class)
 	private List<Funcionario> listFuncionario;
 
 	public Equipe() {
 		super();
-		this.listFuncionario = new ArrayList<>();
 	}
 
 	public Equipe(String nome, List<Funcionario> listFuncionario) {
@@ -43,7 +49,6 @@ public class Equipe {
 	public Equipe(String nome) {
 		super();
 		this.nome = nome;
-		this.listFuncionario = new ArrayList<>();
 	}
 
 	public Equipe(Integer id, String nome, List<Funcionario> listFuncionario) {

@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import luhanlacerda.dto.FuncionarioDTO;
+import luhanlacerda.entity.Equipe;
 import luhanlacerda.entity.Funcionario;
+import luhanlacerda.repository.EquipeRepository;
 import luhanlacerda.repository.FuncionarioRepository;
 
 @RestController
@@ -28,6 +30,9 @@ public class FuncionarioController {
 	@Autowired
 	FuncionarioRepository funcionarioRepository;
 
+	@Autowired
+	EquipeRepository equipeRepository;
+
 	@GetMapping
 	private ResponseEntity<?> index() throws IOException, URISyntaxException {
 		return ResponseEntity.ok(funcionarioRepository.findAll());
@@ -36,7 +41,16 @@ public class FuncionarioController {
 	@PostMapping
 	private ResponseEntity<?> create(@Valid @RequestBody FuncionarioDTO funcionarioDTO) {
 
-		funcionarioRepository.save(buildFuncionarioEntity(new Funcionario(), funcionarioDTO));
+		Optional<Equipe> equipe = funcionarioDTO.getEquipe().getId() != null
+				? equipeRepository.findById(funcionarioDTO.getEquipe().getId())
+				: Optional.empty();
+
+		Funcionario funcionario = buildFuncionarioEntity(new Funcionario(), funcionarioDTO);
+		if (equipe.isPresent()) {
+			funcionario.setEquipe(equipe.get());
+		}
+
+		funcionarioRepository.save(funcionario);
 
 		return ResponseEntity.ok().build();
 	}

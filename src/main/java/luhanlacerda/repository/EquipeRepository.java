@@ -10,5 +10,5 @@ public interface EquipeRepository extends CrudRepository<Equipe, Integer> {
 
 	@Query("SELECT e FROM Equipe e WHERE e.nome = :nome")
 	public Equipe findByNome(@Param("nome") String nome);
-
+	
 }

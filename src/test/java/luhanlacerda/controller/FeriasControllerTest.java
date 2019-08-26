@@ -15,11 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import luhanlacerda.AssignmentApiApplication;
 import luhanlacerda.dto.FeriasDTO;
@@ -50,8 +53,21 @@ public class FeriasControllerTest {
 
 	private Funcionario funcionario;
 
+	private HttpHeaders headers;
+	private HttpEntity<String> entity;
+	private MultiValueMap<String, String> header;
+
 	@Before
 	public void before() {
+		header = new LinkedMultiValueMap<String, String>();
+		header.add("Authorization",
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmlzdHJhZG9yLmZlcmlhc0BjYXN0Z3JvdXAuY29tLmJyIiwiZXhwIjoxNTY3NjM5OTc3fQ.sUcRTQkMkA4Vkb_YYKqXxLdeVuLjI8PMCzF1a8V1Vg3DzZfo5zLT3VVQ3k-l6KXd_4X6NeY7kTcbXZpCIfOEPg");
+
+		headers = new HttpHeaders();
+		headers.set("Authorization",
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmlzdHJhZG9yLmZlcmlhc0BjYXN0Z3JvdXAuY29tLmJyIiwiZXhwIjoxNTY3NjM5OTc3fQ.sUcRTQkMkA4Vkb_YYKqXxLdeVuLjI8PMCzF1a8V1Vg3DzZfo5zLT3VVQ3k-l6KXd_4X6NeY7kTcbXZpCIfOEPg");
+		entity = new HttpEntity<>("body", headers);
+
 		feriasRepository.deleteAll();
 		funcionarioRepository.deleteAll();
 
@@ -67,7 +83,7 @@ public class FeriasControllerTest {
 	@Test
 	public void listFeriasSuccessfullyTest() {
 
-		ResponseEntity<List<Ferias>> res = restTemplate.exchange("/ferias", HttpMethod.GET, null,
+		ResponseEntity<List<Ferias>> res = restTemplate.exchange("/ferias", HttpMethod.GET, entity,
 				new ParameterizedTypeReference<List<Ferias>>() {
 				});
 
@@ -109,7 +125,7 @@ public class FeriasControllerTest {
 //		Ferias ferias2 = feriasRepository
 //				.save(new Ferias(funcionario5, new GregorianCalendar(2020, 8, 28), new GregorianCalendar(2020, 9, 28)));
 
-		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias);
+		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias, header);
 
 		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Ferias>() {
@@ -127,7 +143,7 @@ public class FeriasControllerTest {
 	@Test
 	public void saveFeriasWithoutEquipeCom4FuncionariosTest() {
 
-		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias);
+		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias, header);
 
 		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Ferias>() {
@@ -144,7 +160,7 @@ public class FeriasControllerTest {
 		feriasDTO.setFuncionario(null);
 		feriasDTO.setPeriodoInicial("28/08/2018");
 		feriasDTO.setPeriodoFinal("29/08/2018");
-		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO);
+		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO, header);
 
 		ResponseEntity<FeriasDTO> res = restTemplate.exchange("/ferias", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<FeriasDTO>() {
@@ -162,7 +178,7 @@ public class FeriasControllerTest {
 				new ConvertDate().stringToDateDDMMYYYY("10/10/2010")));
 		feriasDTO.setPeriodoInicial(null);
 		feriasDTO.setPeriodoFinal("29/08/2018");
-		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO);
+		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO, header);
 
 		ResponseEntity<FeriasDTO> res = restTemplate.exchange("/ferias", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<FeriasDTO>() {
@@ -181,7 +197,7 @@ public class FeriasControllerTest {
 		feriasDTO.setPeriodoFinal(null);
 		feriasDTO.setPeriodoInicial("29/08/2018");
 
-		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO);
+		HttpEntity<FeriasDTO> requestBody = new HttpEntity<>(feriasDTO, header);
 
 		ResponseEntity<FeriasDTO> res = restTemplate.exchange("/ferias", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<FeriasDTO>() {
@@ -194,9 +210,9 @@ public class FeriasControllerTest {
 	public void updateFeriasSuccessfullyTest() throws Exception {
 
 		ferias.setPeriodoInicial(new ConvertDate().stringToDateDDMMYYYY("28/08/2018"));
-		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias);
+		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias, header);
 
-		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/" + ferias.getId(), HttpMethod.PUT, requestBody,
+		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/" + ferias.getId(), HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Ferias>() {
 				});
 
@@ -209,9 +225,9 @@ public class FeriasControllerTest {
 	@Test
 	public void updateFeriasNotFoundTest() throws Exception {
 
-		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias);
+		HttpEntity<Ferias> requestBody = new HttpEntity<>(ferias, header);
 
-		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/98098", HttpMethod.PUT, requestBody,
+		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/98098", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Ferias>() {
 				});
 
@@ -221,7 +237,7 @@ public class FeriasControllerTest {
 	@Test
 	public void getFeriasSuccessfullyTest() throws Exception {
 
-		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/" + ferias.getId(), HttpMethod.GET, null,
+		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/" + ferias.getId(), HttpMethod.GET, entity,
 				new ParameterizedTypeReference<Ferias>() {
 				});
 
@@ -238,7 +254,7 @@ public class FeriasControllerTest {
 	@Test
 	public void getFeriasNotFoundTest() throws Exception {
 
-		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/9087", HttpMethod.GET, null,
+		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/9087", HttpMethod.GET, entity,
 				new ParameterizedTypeReference<Ferias>() {
 				});
 
@@ -248,7 +264,7 @@ public class FeriasControllerTest {
 	@Test
 	public void deleteFeriasSuccessfullyTest() throws Exception {
 
-		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/" + ferias.getId(), HttpMethod.DELETE, null,
+		ResponseEntity<Ferias> res = restTemplate.exchange("/ferias/" + ferias.getId(), HttpMethod.DELETE, entity,
 				new ParameterizedTypeReference<Ferias>() {
 				});
 

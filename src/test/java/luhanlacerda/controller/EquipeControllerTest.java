@@ -15,11 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import luhanlacerda.AssignmentApiApplication;
 import luhanlacerda.dto.EquipeDTO;
@@ -41,8 +44,20 @@ public class EquipeControllerTest {
 
 	private Equipe equipe;
 
+	private HttpHeaders headers;
+	private HttpEntity<String> entity;
+	private MultiValueMap<String, String> header;
+
 	@Before
 	public void before() {
+		header = new LinkedMultiValueMap<String, String>();
+		header.add("Authorization",
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmlzdHJhZG9yLmZlcmlhc0BjYXN0Z3JvdXAuY29tLmJyIiwiZXhwIjoxNTY3NjM5OTc3fQ.sUcRTQkMkA4Vkb_YYKqXxLdeVuLjI8PMCzF1a8V1Vg3DzZfo5zLT3VVQ3k-l6KXd_4X6NeY7kTcbXZpCIfOEPg");
+
+		headers = new HttpHeaders();
+		headers.set("Authorization",
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmlzdHJhZG9yLmZlcmlhc0BjYXN0Z3JvdXAuY29tLmJyIiwiZXhwIjoxNTY3NjM5OTc3fQ.sUcRTQkMkA4Vkb_YYKqXxLdeVuLjI8PMCzF1a8V1Vg3DzZfo5zLT3VVQ3k-l6KXd_4X6NeY7kTcbXZpCIfOEPg");
+		entity = new HttpEntity<>("body", headers);
 		equipeRepository.deleteAll();
 
 		equipe = equipeRepository.save(new Equipe("Equipe Teste"));
@@ -51,7 +66,7 @@ public class EquipeControllerTest {
 	@Test
 	public void listEquipeSuccessfullyTest() {
 
-		ResponseEntity<List<Equipe>> res = restTemplate.exchange("/equipes", HttpMethod.GET, null,
+		ResponseEntity<List<Equipe>> res = restTemplate.exchange("/equipes", HttpMethod.GET, entity,
 				new ParameterizedTypeReference<List<Equipe>>() {
 				});
 
@@ -63,13 +78,11 @@ public class EquipeControllerTest {
 		Equipe firstRow = body.get(0);
 		assertEquals(firstRow.getId(), equipe.getId());
 		assertEquals(firstRow.getNome(), equipe.getNome());
-		assertEquals(firstRow.getListFuncionario(), equipe.getListFuncionario());
 	}
 
 	@Test
 	public void saveEquipeSuccessfullyTest() {
-
-		HttpEntity<Equipe> requestBody = new HttpEntity<>(equipe);
+		HttpEntity<Equipe> requestBody = new HttpEntity<>(equipe, header);
 
 		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Equipe>() {
@@ -79,8 +92,6 @@ public class EquipeControllerTest {
 
 		assertEquals(HttpStatus.OK, res.getStatusCode());
 		assertEquals(equipe.getNome(), body.getNome());
-		// TODO ajustar
-		assertEquals(equipe.getListFuncionario(), body.getListFuncionario());
 
 	}
 
@@ -90,7 +101,7 @@ public class EquipeControllerTest {
 		EquipeDTO equipeDTO = new EquipeDTO();
 		equipeDTO.setNome(null);
 		equipeDTO.setListFuncionario(null);
-		HttpEntity<EquipeDTO> requestBody = new HttpEntity<>(equipeDTO);
+		HttpEntity<EquipeDTO> requestBody = new HttpEntity<>(equipeDTO, header);
 
 		ResponseEntity<EquipeDTO> res = restTemplate.exchange("/equipes", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<EquipeDTO>() {
@@ -105,7 +116,7 @@ public class EquipeControllerTest {
 		EquipeDTO equipeDTO = new EquipeDTO();
 		equipeDTO.setNome("Equipe");
 		equipeDTO.setListFuncionario(null);
-		HttpEntity<EquipeDTO> requestBody = new HttpEntity<>(equipeDTO);
+		HttpEntity<EquipeDTO> requestBody = new HttpEntity<>(equipeDTO, header);
 
 		ResponseEntity<EquipeDTO> res = restTemplate.exchange("/equipes", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<EquipeDTO>() {
@@ -118,9 +129,9 @@ public class EquipeControllerTest {
 	public void updateSignintSuccessfullyTest() throws Exception {
 
 		equipe.setNome("novo nome da equipe");
-		HttpEntity<Equipe> requestBody = new HttpEntity<>(equipe);
+		HttpEntity<Equipe> requestBody = new HttpEntity<>(equipe, header);
 
-		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/" + equipe.getId(), HttpMethod.PUT, requestBody,
+		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/" + equipe.getId(), HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Equipe>() {
 				});
 
@@ -133,9 +144,9 @@ public class EquipeControllerTest {
 	@Test
 	public void updateEquipeNotFoundTest() throws Exception {
 
-		HttpEntity<Equipe> requestBody = new HttpEntity<>(equipe);
+		HttpEntity<Equipe> requestBody = new HttpEntity<>(equipe, header);
 
-		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/98098", HttpMethod.PUT, requestBody,
+		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/98098", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Equipe>() {
 				});
 
@@ -145,7 +156,7 @@ public class EquipeControllerTest {
 	@Test
 	public void getEquipeSuccessfullyTest() throws Exception {
 
-		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/" + equipe.getId(), HttpMethod.GET, null,
+		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/" + equipe.getId(), HttpMethod.GET, entity,
 				new ParameterizedTypeReference<Equipe>() {
 				});
 
@@ -154,15 +165,13 @@ public class EquipeControllerTest {
 		assertEquals(HttpStatus.OK, res.getStatusCode());
 		assertEquals(equipe.getId(), body.getId());
 		assertEquals(equipe.getNome(), body.getNome());
-		// TODO ajustar
-		assertEquals(equipe.getListFuncionario().toArray(), body.getListFuncionario());
 
 	}
 
 	@Test
 	public void getEquipeNotFoundTest() throws Exception {
 
-		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/9087", HttpMethod.GET, null,
+		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/9087", HttpMethod.GET, entity,
 				new ParameterizedTypeReference<Equipe>() {
 				});
 
@@ -172,7 +181,7 @@ public class EquipeControllerTest {
 	@Test
 	public void deleteEquipeSuccessfullyTest() throws Exception {
 
-		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/" + equipe.getId(), HttpMethod.DELETE, null,
+		ResponseEntity<Equipe> res = restTemplate.exchange("/equipes/" + equipe.getId(), HttpMethod.DELETE, entity,
 				new ParameterizedTypeReference<Equipe>() {
 				});
 

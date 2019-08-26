@@ -15,11 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import luhanlacerda.AssignmentApiApplication;
 import luhanlacerda.dto.FuncionarioDTO;
@@ -43,8 +46,21 @@ public class FuncionarioControllerTest {
 
 	private Funcionario funcionario;
 
+	private HttpHeaders headers;
+	private HttpEntity<String> entity;
+	private MultiValueMap<String, String> header;
+
 	@Before
 	public void before() {
+		header = new LinkedMultiValueMap<String, String>();
+		header.add("Authorization",
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmlzdHJhZG9yLmZlcmlhc0BjYXN0Z3JvdXAuY29tLmJyIiwiZXhwIjoxNTY3NjM5OTc3fQ.sUcRTQkMkA4Vkb_YYKqXxLdeVuLjI8PMCzF1a8V1Vg3DzZfo5zLT3VVQ3k-l6KXd_4X6NeY7kTcbXZpCIfOEPg");
+
+		headers = new HttpHeaders();
+		headers.set("Authorization",
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmlzdHJhZG9yLmZlcmlhc0BjYXN0Z3JvdXAuY29tLmJyIiwiZXhwIjoxNTY3NjM5OTc3fQ.sUcRTQkMkA4Vkb_YYKqXxLdeVuLjI8PMCzF1a8V1Vg3DzZfo5zLT3VVQ3k-l6KXd_4X6NeY7kTcbXZpCIfOEPg");
+		entity = new HttpEntity<>("body", headers);
+
 		funcionarioRepository.deleteAll();
 
 		funcionario = funcionarioRepository
@@ -57,7 +73,7 @@ public class FuncionarioControllerTest {
 	@Test
 	public void listFuncionarioSuccessfullyTest() {
 
-		ResponseEntity<List<Funcionario>> res = restTemplate.exchange("/funcionarios", HttpMethod.GET, null,
+		ResponseEntity<List<Funcionario>> res = restTemplate.exchange("/funcionarios", HttpMethod.GET, entity,
 				new ParameterizedTypeReference<List<Funcionario>>() {
 				});
 
@@ -77,7 +93,7 @@ public class FuncionarioControllerTest {
 	@Test
 	public void saveFuncionarioSuccessfullyTest() {
 
-		HttpEntity<Funcionario> requestBody = new HttpEntity<>(funcionario);
+		HttpEntity<Funcionario> requestBody = new HttpEntity<>(funcionario, header);
 
 		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Funcionario>() {
@@ -98,7 +114,7 @@ public class FuncionarioControllerTest {
 
 		FuncionarioDTO funcionarioDTO = new FuncionarioDTO();
 		funcionarioDTO.setNome(null);
-		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO);
+		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO, header);
 
 		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Funcionario>() {
@@ -115,7 +131,7 @@ public class FuncionarioControllerTest {
 		funcionarioDTO.setDataDeNascimento(null);
 		funcionarioDTO.setDataDeContratacao("10/10/2010");
 		funcionarioDTO.setEndereco(new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"));
-		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO);
+		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO, header);
 
 		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Funcionario>() {
@@ -132,7 +148,7 @@ public class FuncionarioControllerTest {
 		funcionarioDTO.setDataDeContratacao(null);
 		funcionarioDTO.setDataDeNascimento("10/10/2010");
 		funcionarioDTO.setEndereco(new Endereco("rua 01", "121", "APTO 102", "Recife Antigo", "Recife", "PE"));
-		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO);
+		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO, header);
 
 		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Funcionario>() {
@@ -149,7 +165,7 @@ public class FuncionarioControllerTest {
 		funcionarioDTO.setDataDeContratacao("10/10/2010");
 		funcionarioDTO.setDataDeNascimento("10/10/2010");
 		funcionarioDTO.setEndereco(null);
-		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO);
+		HttpEntity<FuncionarioDTO> requestBody = new HttpEntity<>(funcionarioDTO, header);
 
 		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Funcionario>() {
@@ -162,10 +178,10 @@ public class FuncionarioControllerTest {
 	public void updateFuncionariotSuccessfullyTest() throws Exception {
 
 		funcionario.setEndereco(new Endereco("nova rua", "12", "casa 1", "Boa Viagem", "Recife", "PE"));
-		HttpEntity<Funcionario> requestBody = new HttpEntity<>(funcionario);
+		HttpEntity<Funcionario> requestBody = new HttpEntity<>(funcionario, header);
 
 		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios/" + funcionario.getMatricula(),
-				HttpMethod.PUT, requestBody, new ParameterizedTypeReference<Funcionario>() {
+				HttpMethod.POST, requestBody, new ParameterizedTypeReference<Funcionario>() {
 				});
 
 		Funcionario body = res.getBody();
@@ -177,9 +193,9 @@ public class FuncionarioControllerTest {
 	@Test
 	public void updateFuncionarioNotFoundTest() throws Exception {
 
-		HttpEntity<Funcionario> requestBody = new HttpEntity<>(funcionario);
+		HttpEntity<Funcionario> requestBody = new HttpEntity<>(funcionario, header);
 
-		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios/98098", HttpMethod.PUT, requestBody,
+		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios/98098", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Funcionario>() {
 				});
 
@@ -190,7 +206,7 @@ public class FuncionarioControllerTest {
 	public void getFuncionarioSuccessfullyTest() throws Exception {
 
 		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios/" + funcionario.getMatricula(),
-				HttpMethod.GET, null, new ParameterizedTypeReference<Funcionario>() {
+				HttpMethod.GET, entity, new ParameterizedTypeReference<Funcionario>() {
 				});
 
 		Funcionario body = res.getBody();
@@ -207,7 +223,7 @@ public class FuncionarioControllerTest {
 	@Test
 	public void getFuncionarioNotFoundTest() throws Exception {
 
-		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios/9087", HttpMethod.GET, null,
+		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios/9087", HttpMethod.GET, entity,
 				new ParameterizedTypeReference<Funcionario>() {
 				});
 
@@ -218,7 +234,7 @@ public class FuncionarioControllerTest {
 	public void deleteFuncionarioSuccessfullyTest() throws Exception {
 
 		ResponseEntity<Funcionario> res = restTemplate.exchange("/funcionarios/" + funcionario.getMatricula(),
-				HttpMethod.DELETE, null, new ParameterizedTypeReference<Funcionario>() {
+				HttpMethod.DELETE, entity, new ParameterizedTypeReference<Funcionario>() {
 				});
 
 		assertEquals(HttpStatus.OK, res.getStatusCode());

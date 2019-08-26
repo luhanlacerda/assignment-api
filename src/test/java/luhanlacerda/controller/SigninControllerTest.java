@@ -15,11 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import luhanlacerda.AssignmentApiApplication;
 import luhanlacerda.dto.SigninDTO;
@@ -40,9 +43,22 @@ public class SigninControllerTest {
 	private TestRestTemplate restTemplate;
 
 	private Signin signin;
+	
+	private HttpHeaders headers;
+	private HttpEntity<String> entity;
+	private MultiValueMap<String, String> header;
 
 	@Before
 	public void before() {
+		header = new LinkedMultiValueMap<String, String>();
+		header.add("Authorization",
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmlzdHJhZG9yLmZlcmlhc0BjYXN0Z3JvdXAuY29tLmJyIiwiZXhwIjoxNTY3NjM5OTc3fQ.sUcRTQkMkA4Vkb_YYKqXxLdeVuLjI8PMCzF1a8V1Vg3DzZfo5zLT3VVQ3k-l6KXd_4X6NeY7kTcbXZpCIfOEPg");
+
+		headers = new HttpHeaders();
+		headers.set("Authorization",
+				"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmlzdHJhZG9yLmZlcmlhc0BjYXN0Z3JvdXAuY29tLmJyIiwiZXhwIjoxNTY3NjM5OTc3fQ.sUcRTQkMkA4Vkb_YYKqXxLdeVuLjI8PMCzF1a8V1Vg3DzZfo5zLT3VVQ3k-l6KXd_4X6NeY7kTcbXZpCIfOEPg");
+		entity = new HttpEntity<>("body", headers);
+
 		signinRepository.deleteAll();
 
 		signin = signinRepository.save(new Signin("teste@teste.com", "123"));
@@ -51,7 +67,7 @@ public class SigninControllerTest {
 	@Test
 	public void listSigninSuccessfullyTest() {
 
-		ResponseEntity<List<Signin>> res = restTemplate.exchange("/signins", HttpMethod.GET, null,
+		ResponseEntity<List<Signin>> res = restTemplate.exchange("/signins", HttpMethod.GET, entity,
 				new ParameterizedTypeReference<List<Signin>>() {
 				});
 
@@ -69,7 +85,7 @@ public class SigninControllerTest {
 	@Test
 	public void saveSigninSuccessfullyTest() {
 
-		HttpEntity<Signin> requestBody = new HttpEntity<>(signin);
+		HttpEntity<Signin> requestBody = new HttpEntity<>(signin, header);
 
 		ResponseEntity<Signin> res = restTemplate.exchange("/signins", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Signin>() {
@@ -89,7 +105,7 @@ public class SigninControllerTest {
 		SigninDTO signinDTO = new SigninDTO();
 		signinDTO.setEmail(null);
 		signinDTO.setPassword("teste");
-		HttpEntity<SigninDTO> requestBody = new HttpEntity<>(signinDTO);
+		HttpEntity<SigninDTO> requestBody = new HttpEntity<>(signinDTO, header);
 
 		ResponseEntity<Signin> res = restTemplate.exchange("/signins", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Signin>() {
@@ -104,7 +120,7 @@ public class SigninControllerTest {
 		SigninDTO signinDTO = new SigninDTO();
 		signinDTO.setEmail("teste@teste.com");
 		signinDTO.setPassword(null);
-		HttpEntity<SigninDTO> requestBody = new HttpEntity<>(signinDTO);
+		HttpEntity<SigninDTO> requestBody = new HttpEntity<>(signinDTO, header);
 
 		ResponseEntity<Signin> res = restTemplate.exchange("/signins", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Signin>() {
@@ -118,9 +134,9 @@ public class SigninControllerTest {
 
 		signin.setEmail("novo_email@teste.com");
 		signin.setPassword("novas_senha");
-		HttpEntity<Signin> requestBody = new HttpEntity<>(signin);
+		HttpEntity<Signin> requestBody = new HttpEntity<>(signin, header);
 
-		ResponseEntity<Signin> res = restTemplate.exchange("/signins/" + signin.getId(), HttpMethod.PUT, requestBody,
+		ResponseEntity<Signin> res = restTemplate.exchange("/signins/" + signin.getId(), HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Signin>() {
 				});
 
@@ -134,9 +150,9 @@ public class SigninControllerTest {
 	@Test
 	public void updateSigninNotFoundTest() throws Exception {
 
-		HttpEntity<Signin> requestBody = new HttpEntity<>(signin);
+		HttpEntity<Signin> requestBody = new HttpEntity<>(signin, header);
 
-		ResponseEntity<Signin> res = restTemplate.exchange("/signins/98098", HttpMethod.PUT, requestBody,
+		ResponseEntity<Signin> res = restTemplate.exchange("/signins/98098", HttpMethod.POST, requestBody,
 				new ParameterizedTypeReference<Signin>() {
 				});
 
@@ -146,7 +162,7 @@ public class SigninControllerTest {
 	@Test
 	public void getSigninSuccessfullyTest() throws Exception {
 
-		ResponseEntity<Signin> res = restTemplate.exchange("/signins/" + signin.getId(), HttpMethod.GET, null,
+		ResponseEntity<Signin> res = restTemplate.exchange("/signins/" + signin.getId(), HttpMethod.GET, entity,
 				new ParameterizedTypeReference<Signin>() {
 				});
 
@@ -162,7 +178,7 @@ public class SigninControllerTest {
 	@Test
 	public void getSigninNotFoundTest() throws Exception {
 
-		ResponseEntity<Signin> res = restTemplate.exchange("/signins/9087", HttpMethod.GET, null,
+		ResponseEntity<Signin> res = restTemplate.exchange("/signins/9087", HttpMethod.GET, entity,
 				new ParameterizedTypeReference<Signin>() {
 				});
 
@@ -172,7 +188,7 @@ public class SigninControllerTest {
 	@Test
 	public void deleteSigninSuccessfullyTest() throws Exception {
 
-		ResponseEntity<Signin> res = restTemplate.exchange("/signins/" + signin.getId(), HttpMethod.DELETE, null,
+		ResponseEntity<Signin> res = restTemplate.exchange("/signins/" + signin.getId(), HttpMethod.DELETE, entity,
 				new ParameterizedTypeReference<Signin>() {
 				});
 

@@ -1,32 +1,14 @@
 package luhanlacerda.config;
 
-import static org.springframework.web.cors.CorsConfiguration.ALL;
-
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
-@EnableWebSecurity
-@ComponentScan
-public class Config extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
-
-	/**
-	 * CORS configuration
-	 * 
-	 * @return
-	 */
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins(ALL).allowedMethods(ALL).allowedHeaders(ALL).allowCredentials(true);
-	}
+//@Configuration
+//@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -44,7 +26,7 @@ public class Config extends WebSecurityConfigurerAdapter implements WebMvcConfig
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		// cria uma conta default
-		auth.inMemoryAuthentication().withUser("administrador.ferias@castgroup.com.br").password("{noop}123a").roles("ADMIN");
+		auth.inMemoryAuthentication().withUser("admin").password("password").roles("ADMIN");
 	}
 
 }
